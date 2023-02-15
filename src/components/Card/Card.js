@@ -3,25 +3,26 @@ import styles from "./Card.module.css";
 export default function Card({
   imgName,
   color,
-  code,
+  identifier,
   status,
   count,
   showCount,
-  picked,
-  walking,
+  session_count,
+  session_duration,
 }) {
+
   return (
     <div className={styles.container}>
       {showCount && <div className={styles.count}>{count}</div>}
       <div className={styles.body}>
         <div className={styles.cardImage}>
-          <img src={`./images/${imgName}.jpg`} alt="product-jpg" />
+          {imgName && <img src={`./images/${imgName}.jpg`} alt="product-jpg" />}
         </div>
-        <span className={styles.productColor}>{color}</span>
-        <span className={styles.productCode}>{code}</span>
+        <span className={styles.productColor}>{color || 'white'}</span>
+        <span className={styles.productCode}>{identifier}</span>
         {status && <span className={styles.productStatus}>{status}</span>}
-        {picked && <span className={styles.productInfo}>{`${picked} Int`}</span>}
-        {walking && <span className={styles.productInfo}>{`${walking} sc avg`}</span>}
+        {session_count && <span className={styles.productInfo}>{`${Math.round(session_count)} Int`}</span>}
+        {session_duration && <span className={styles.productInfo}>{`${Math.round(session_duration)} sc avg`}</span>}
       </div>
     </div>
   );

@@ -45,9 +45,8 @@ export default function Main() {
     })
 
     const report = await res.json()
-    setReports(report);
+    setReports(report)
     setLoading(false)
-    console.log(report)
   }
 
   useEffect(() => {

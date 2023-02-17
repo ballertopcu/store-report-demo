@@ -6,7 +6,7 @@ export default function Report({reports, loading}) {
        <h3 className="title">
         Report
       </h3>
-      <Products products={reports} showCount={true} loading={loading}/>
+      <Products products={reports} showCount={true}/>
     </div>
   )
 }

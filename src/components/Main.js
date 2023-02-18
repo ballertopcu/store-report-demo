@@ -10,6 +10,7 @@ export default function Main() {
 
   const getData = async () => {
     setLoading(true);
+
     let sendData = {
       user_name: "ersel",
       password: "1234",
@@ -71,7 +72,10 @@ export default function Main() {
 
     setBasket(basket);
     setReports(reports);
-    setLoading(false);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 100);
   };
 
   useEffect(() => {
@@ -83,22 +87,19 @@ export default function Main() {
       <div className="logo">
         <img src="./images/logo.png" alt="logo" />
       </div>
-      <div className="content">
-        {loading ? (
-          <div className="loader">
-            <FallingLines
-              color="#fff"
-              width="100"
-              visible={true}
-              ariaLabel="falling-lines-loading"
-            />
-          </div>
-        ) : (
-          <>
-            <ActiveBasket basket={basket} />
-            <Report reports={reports} />
-          </>
-        )}
+      {loading && (
+        <div className="loader">
+          <FallingLines
+            color="#fff"
+            width="100"
+            visible={true}
+            ariaLabel="falling-lines-loading"
+          />
+        </div>
+      )}
+      <div className="content" style={{ display: loading ? "none" : "flex" }}>
+        <ActiveBasket basket={basket} />
+        <Report reports={reports} />
       </div>
     </div>
   );

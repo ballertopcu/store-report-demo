@@ -54,9 +54,9 @@ export default function Card({
         <div className={styles.cardImage}>
           {meta_data?.image_url && <img src={meta_data.image_url} alt="product-jpg" />}
         </div>
-        <span className={styles.productColor}>{meta_data?.color || "white"}</span>
+        <span className={styles.productColor}>{meta_data?.color || 'white'}</span>
         <span className={styles.productCode}>{identifier || device_identifier}</span>
-        {event && <span className={styles.productStatus}>{event}</span>}
+        {(event || event === '') && <span className={styles.productStatus}>{event}</span>}
         {session_count && (
           <span className={styles.productInfo}>{`${Math.round(session_count)} Int`}</span>
         )}

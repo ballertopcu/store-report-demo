@@ -55,7 +55,6 @@ export default function Main() {
 
   useEffect(() => {
     const getData = async () => {
-      debugger
       setLoading(true);
   
       let sendData = {

@@ -1,6 +1,6 @@
 import ActiveBasket from "./ActiveBasket/ActiveBasket";
 import Report from "./Report.js/Report";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FallingLines } from "react-loader-spinner";
 
 export default function Main() {
@@ -40,7 +40,7 @@ export default function Main() {
     return resReports.json();
   };
 
-  const refreshData = () => {
+  const refreshData = useCallback(() => {
     setInterval(async () => {
       const resReports = await getReports(userData.store_id, token.token);
       setReports(resReports);
@@ -49,62 +49,62 @@ export default function Main() {
       const resBasket = await getBasket(userData.store_id, token.token);
       setBasket(resBasket);
     }, 1000);
-  };
+  }, [userData, token]);
 
-  const getData = async () => {
-    setLoading(true);
-
-    let sendData = {
-      user_name: "ersel",
-      password: "1234",
-    };
-
-    let res = await fetch(
-      "https://api-legacy.buybuddy.co/api/v1/user/sign_in",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sendData),
-      }
-    );
-    const userDataRes = await res.json();
-    setUserData(userDataRes);
-
-    sendData = {
-      passphrase: userDataRes.passphrase,
-    };
-
-    res = await fetch(
-      "https://api-legacy.buybuddy.co/api/v1/user/sign_in/token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(sendData),
-      }
-    );
-    const tokenData = await res.json();
-    setToken(tokenData);
-
-    const [resReports, resBasket] = await Promise.all([
-      getReports(userDataRes.store_id, tokenData.token),
-      getBasket(userDataRes.store_id, tokenData.token),
-    ]);
-
-    setBasket(resBasket);
-    setReports(resReports);
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 200);
-
-    
-  };
+  
 
   useEffect(() => {
+    const getData = async () => {
+      debugger
+      setLoading(true);
+  
+      let sendData = {
+        user_name: "ersel",
+        password: "1234",
+      };
+  
+      let res = await fetch(
+        "https://api-legacy.buybuddy.co/api/v1/user/sign_in",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sendData),
+        }
+      );
+      const userDataRes = await res.json();
+      setUserData(userDataRes);
+  
+      sendData = {
+        passphrase: userDataRes.passphrase,
+      };
+  
+      res = await fetch(
+        "https://api-legacy.buybuddy.co/api/v1/user/sign_in/token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(sendData),
+        }
+      );
+      const tokenData = await res.json();
+      setToken(tokenData);
+  
+      const [resReports, resBasket] = await Promise.all([
+        getReports(userDataRes.store_id, tokenData.token),
+        getBasket(userDataRes.store_id, tokenData.token),
+      ]);
+  
+      setBasket(resBasket);
+      setReports(resReports);
+  
+      setTimeout(() => {
+        setLoading(false);
+      }, 200);
+    }
     getData().then();
   }, []);
 
@@ -112,9 +112,9 @@ export default function Main() {
     if (!loading && token) {
       setTimeout(() => {
         refreshData();
-      }, 1000)
+      }, 1000);
     }
-  }, [loading])
+  }, [loading, refreshData, token]);
 
   return (
     <div className="main-container">

@@ -7,6 +7,49 @@ export default function Main() {
   const [reports, setReports] = useState([]);
   const [basket, setBasket] = useState([]);
   const [loading, setLoading] = useState([]);
+  const [userData, setUserData] = useState(null);
+  const [token, setToken] = useState(null);
+
+  const getBasket = async (storeId, pToken) => {
+    const resBasket = await fetch(
+      `https://api-legacy.buybuddy.co/api/v1/merchant/store/${storeId}/session_last_event`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${pToken}`,
+        },
+      }
+    );
+
+    return resBasket.json();
+  };
+
+  const getReports = async (storeId, pToken) => {
+    const resReports = await fetch(
+      `https://api-legacy.buybuddy.co/api/v1/merchant/store/${storeId}/session_history`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${pToken}`,
+        },
+      }
+    );
+
+    return resReports.json();
+  };
+
+  const refreshData = () => {
+    setInterval(async () => {
+      const resReports = await getReports(userData.store_id, token.token);
+      setReports(resReports);
+    }, 5000);
+    setInterval(async () => {
+      const resBasket = await getBasket(userData.store_id, token.token);
+      setBasket(resBasket);
+    }, 1000);
+  };
 
   const getData = async () => {
     setLoading(true);
@@ -26,10 +69,11 @@ export default function Main() {
         body: JSON.stringify(sendData),
       }
     );
-    const userData = await res.json();
+    const userDataRes = await res.json();
+    setUserData(userDataRes);
 
     sendData = {
-      passphrase: userData.passphrase,
+      passphrase: userDataRes.passphrase,
     };
 
     res = await fetch(
@@ -43,44 +87,34 @@ export default function Main() {
       }
     );
     const tokenData = await res.json();
+    setToken(tokenData);
 
     const [resReports, resBasket] = await Promise.all([
-      fetch(
-        `https://api-legacy.buybuddy.co/api/v1/merchant/store/${userData.store_id}/session_history`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenData.token}`,
-          },
-        }
-      ),
-      fetch(
-        `https://api-legacy.buybuddy.co/api/v1/merchant/store/${userData.store_id}/session_last_event`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenData.token}`,
-          },
-        }
-      ),
+      getReports(userDataRes.store_id, tokenData.token),
+      getBasket(userDataRes.store_id, tokenData.token),
     ]);
 
-    const reports = await resReports.json();
-    const basket = await resBasket.json();
-
-    setBasket(basket);
-    setReports(reports);
+    setBasket(resBasket);
+    setReports(resReports);
 
     setTimeout(() => {
       setLoading(false);
-    }, 100);
+    }, 200);
+
+    
   };
 
   useEffect(() => {
-    getData();
+    getData().then();
   }, []);
+
+  useEffect(() => {
+    if (!loading && token) {
+      setTimeout(() => {
+        refreshData();
+      }, 1000)
+    }
+  }, [loading])
 
   return (
     <div className="main-container">

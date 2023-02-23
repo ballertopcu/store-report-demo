@@ -91,7 +91,7 @@ export default function Main() {
       setTimeout(() => {
         setLoading(false);
         flag.current = true;
-      }, 200);
+      }, 300);
     };
     getData().then();
   }, []);
@@ -105,7 +105,7 @@ export default function Main() {
   const handleBasket = useCallback(async () => {
     const resBasket = await getBasket(userData.store_id, token.token);
     setBasket(resBasket);
-    console.log(resBasket)
+    console.log(resBasket);
     setTimeout(handleBasket, 1000);
   }, [userData, token]);
 
@@ -141,10 +141,12 @@ export default function Main() {
           />
         </div>
       )}
-      <div className="content" style={{ display: loading ? "none" : "flex" }}>
-        <ActiveBasket basket={basket} />
-        <Report reports={reports} />
-      </div>
+      {!loading && (
+        <div className="content">
+          <ActiveBasket basket={basket} />
+          <Report reports={reports} />
+        </div>
+      )}
     </div>
   );
 }

@@ -8,7 +8,8 @@ export default function Card({
   session_count,
   session_duration,
   event,
-  device_identifier
+  device_identifier,
+  item_name
 }) {
 
 //   {
@@ -47,6 +48,47 @@ export default function Card({
   //   },
   // ];
 
+//   [
+//     {
+//         "id": 20847516,
+//         "inserted_at": "2023-02-23T17:23:04Z",
+//         "updated_at": "2023-02-23T17:28:44Z",
+//         "device_id": 22120,
+//         "item_id": 2348,
+//         "store_id": 5,
+//         "duration": 340,
+//         "add_to_basket": true,
+//         "zone_changed": true,
+//         "state_id": 3,
+//         "event_id": 2,
+//         "event": "Walking",
+//         "upc": "194252192429",
+//         "item_name": "APPLE MAGSAFE CHARGER",
+//         "meta_data": {
+//             "image_url": "https://bb-item-images.s3.eu-central-1.amazonaws.com/1213049/1213049.jpg"
+//         },
+//         "device_identifier": "000B30C7"
+//     },
+//     {
+//         "id": 20831698,
+//         "inserted_at": "2023-02-23T11:28:09Z",
+//         "updated_at": "2023-02-23T11:28:09Z",
+//         "device_id": 28746,
+//         "item_id": 25988,
+//         "store_id": 5,
+//         "duration": 0,
+//         "add_to_basket": false,
+//         "zone_changed": false,
+//         "state_id": 5,
+//         "event_id": 0,
+//         "event": "",
+//         "upc": "194253416869",
+//         "item_name": "IPHONE 14 PRO MAX  MAGSAFE  SILIKON KILIF-SUKULENT",
+//         "meta_data": null,
+//         "device_identifier": "000B5D3B"
+//     }
+// ]
+
   return (
     <div className={styles.container}>
       {showCount && <div className={styles.count}>{count}</div>}
@@ -54,7 +96,7 @@ export default function Card({
         <div className={styles.cardImage}>
           {meta_data?.image_url && <img src={meta_data.image_url} alt="product-jpg" />}
         </div>
-        <span className={styles.productColor}>{meta_data?.color || 'white'}</span>
+        <span className={styles.productColor}>{item_name}</span>
         <span className={styles.productCode}>{identifier || device_identifier}</span>
         {(event || event === '') && <span className={styles.productStatus}>{event}</span>}
         {session_count && (
